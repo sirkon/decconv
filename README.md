@@ -1,2 +1,2 @@
-# decdec
-Decimal decoding library
+# decconv
+Decimal conversion library

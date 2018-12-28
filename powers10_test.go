@@ -1,4 +1,4 @@
-package decdec
+package decconv
 
 import (
 	"github.com/sirkon/ds128"

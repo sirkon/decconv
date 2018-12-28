@@ -1,4 +1,4 @@
-package decdec
+package decconv
 
 import (
 	"testing"
@@ -14,6 +14,7 @@ func TestDecode32(t *testing.T) {
 		name    string
 		args    args
 		want    uint32
+		conv    string
 		wantErr bool
 	}{
 		{
@@ -24,6 +25,7 @@ func TestDecode32(t *testing.T) {
 				input:     "12",
 			},
 			want:    12,
+			conv:    "12",
 			wantErr: false,
 		},
 		{
@@ -34,6 +36,7 @@ func TestDecode32(t *testing.T) {
 				input:     "-123",
 			},
 			want:    ^uint32(123) + 1,
+			conv:    "-123",
 			wantErr: false,
 		},
 		{
@@ -44,6 +47,7 @@ func TestDecode32(t *testing.T) {
 				input:     "12.0",
 			},
 			want:    120,
+			conv:    "12",
 			wantErr: false,
 		},
 		{
@@ -54,6 +58,7 @@ func TestDecode32(t *testing.T) {
 				input:     "12.02",
 			},
 			want:    1202,
+			conv:    "12.02",
 			wantErr: false,
 		},
 		{
@@ -64,6 +69,7 @@ func TestDecode32(t *testing.T) {
 				input:     "3015.07654",
 			},
 			want:    301507654,
+			conv:    "3015.07654",
 			wantErr: false,
 		},
 		{
@@ -74,6 +80,7 @@ func TestDecode32(t *testing.T) {
 				input:     "-3015.07654",
 			},
 			want:    ^uint32(301507654) + 1,
+			conv:    "-3015.07654",
 			wantErr: false,
 		},
 		{
@@ -84,6 +91,7 @@ func TestDecode32(t *testing.T) {
 				input:     "0000123.25",
 			},
 			want:    12325,
+			conv:    "123.25",
 			wantErr: false,
 		},
 		{
@@ -94,6 +102,7 @@ func TestDecode32(t *testing.T) {
 				input:     "123.02500000000000",
 			},
 			want:    123025,
+			conv:    "123.025",
 			wantErr: false,
 		},
 		{
@@ -104,6 +113,7 @@ func TestDecode32(t *testing.T) {
 				input:     "-0000000123.12300000000",
 			},
 			want:    ^uint32(1231230) + 1,
+			conv:    "-123.123",
 			wantErr: false,
 		},
 		{
@@ -166,6 +176,9 @@ func TestDecode32(t *testing.T) {
 			}
 			if got != tt.want {
 				t.Errorf("Decode32() = %v, want %v", got, tt.want)
+			}
+			if conv := Encode32(tt.args.scale, got); conv != tt.conv && err == nil {
+				t.Errorf("Encode32() = %v, want %v", conv, tt.conv)
 			}
 		})
 	}

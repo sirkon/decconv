@@ -2,7 +2,7 @@
 Here we store powers of 10 for uint32, uint64 and 128 bit unsigned integers
 */
 
-package decdec
+package decconv
 
 import (
 	"github.com/sirkon/ds128"
