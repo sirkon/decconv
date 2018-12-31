@@ -13,7 +13,7 @@ func TestDecode32(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    uint32
+		want    int32
 		conv    string
 		wantErr bool
 	}{
@@ -35,7 +35,7 @@ func TestDecode32(t *testing.T) {
 				scale:     0,
 				input:     "-123",
 			},
-			want:    ^uint32(123) + 1,
+			want:    -123,
 			conv:    "-123",
 			wantErr: false,
 		},
@@ -79,7 +79,7 @@ func TestDecode32(t *testing.T) {
 				scale:     5,
 				input:     "-3015.07654",
 			},
-			want:    ^uint32(301507654) + 1,
+			want:    -301507654,
 			conv:    "-3015.07654",
 			wantErr: false,
 		},
@@ -112,7 +112,7 @@ func TestDecode32(t *testing.T) {
 				scale:     4,
 				input:     "-0000000123.12300000000",
 			},
-			want:    ^uint32(1231230) + 1,
+			want:    -1231230,
 			conv:    "-123.123",
 			wantErr: false,
 		},

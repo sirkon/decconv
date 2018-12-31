@@ -9,15 +9,15 @@ import (
 	"math/big"
 )
 
-var pow32 []uint32
-var pow64 []uint64
+var pow32 []int32
+var pow64 []int64
 var pow128 []struct {
 	lo uint64
 	hi uint64
 }
 
 func init() {
-	cur32 := uint32(1)
+	cur32 := int32(1)
 	for {
 		pow32 = append(pow32, cur32)
 		next32 := cur32 * 10
@@ -27,7 +27,7 @@ func init() {
 		cur32 = next32
 	}
 
-	cur64 := uint64(1)
+	cur64 := int64(1)
 	for {
 		pow64 = append(pow64, cur64)
 		next64 := cur64 * 10

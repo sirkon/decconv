@@ -13,7 +13,7 @@ import (
 // Decode64 converts number from input into arbitrary precision decimal number with given precision and scale parameters
 //   precision - amount of meaningful digits before and after dot
 //   scale     - amount of meaningful digits after dot
-func Decode64(precision, scale int, input []byte) (uint64, error) {
+func Decode64(precision, scale int, input []byte) (int64, error) {
 	source := input
 
 	if len(source) == 0 {
@@ -27,7 +27,7 @@ func Decode64(precision, scale int, input []byte) (uint64, error) {
 	}
 
 	// pass until . collecting data right into the result. Will pass leading zeroes as well
-	var integral uint64
+	var integral int64
 	var fraction []byte
 	integralCount := 0
 	passingZeroes := true
@@ -54,13 +54,13 @@ func Decode64(precision, scale int, input []byte) (uint64, error) {
 				integralLimit,
 			)
 		}
-		integral = integral*10 + uint64(v-'0')
+		integral = integral*10 + int64(v-'0')
 	}
 
 	scaleCount := 0
 	meaningful := 1
-	multiplier := uint64(10)
-	var frac uint64
+	multiplier := int64(10)
+	var frac int64
 	for _, v := range fraction {
 		if v < '0' || v > '9' {
 			return 0, fmt.Errorf("decoding error: `%s` is not a decimal number", string(input))
@@ -70,7 +70,7 @@ func Decode64(precision, scale int, input []byte) (uint64, error) {
 			meaningful++
 			continue
 		}
-		frac = frac*multiplier + uint64(v-'0')
+		frac = frac*multiplier + int64(v-'0')
 		multiplier = 10
 		scaleCount += meaningful
 		if scaleCount > scale {
@@ -85,15 +85,15 @@ func Decode64(precision, scale int, input []byte) (uint64, error) {
 
 	res := integral*pow64[scale] + frac*pow64[scale-scaleCount]
 	if negative {
-		return -res, nil
+		return int64(-res), nil
 	}
-	return res, nil
+	return int64(res), nil
 }
 
 // Encode64 encodes given decimal number v with given scale into string
-func Encode64(scale int, v uint64) string {
+func Encode64(scale int, v int64) string {
 	buf := &bytes.Buffer{}
-	if int32(v) < 0 {
+	if int64(v) < 0 {
 		buf.WriteByte('-')
 		v = ^v + 1
 	}

@@ -9,7 +9,7 @@ import (
 // Decode32 converts number from input into arbitrary precision decimal number with given precision and scale parameters
 //   precision - amount of meaningful digits before and after dot
 //   scale     - amount of meaningful digits after dot
-func Decode32(precision, scale int, input []byte) (uint32, error) {
+func Decode32(precision, scale int, input []byte) (int32, error) {
 	source := input
 
 	if len(source) == 0 {
@@ -23,7 +23,7 @@ func Decode32(precision, scale int, input []byte) (uint32, error) {
 	}
 
 	// pass until . collecting data right into the result. Will pass leading zeroes as well
-	var integral uint32
+	var integral int32
 	var fraction []byte
 	integralCount := 0
 	passingZeroes := true
@@ -50,13 +50,13 @@ func Decode32(precision, scale int, input []byte) (uint32, error) {
 				integralLimit,
 			)
 		}
-		integral = integral*10 + uint32(v-'0')
+		integral = integral*10 + int32(v-'0')
 	}
 
 	scaleCount := 0
 	meaningful := 1
-	multiplier := uint32(10)
-	var frac uint32
+	multiplier := int32(10)
+	var frac int32
 	for _, v := range fraction {
 		if v < '0' || v > '9' {
 			return 0, fmt.Errorf("decoding error: `%s` is not a decimal number", string(input))
@@ -66,7 +66,7 @@ func Decode32(precision, scale int, input []byte) (uint32, error) {
 			meaningful++
 			continue
 		}
-		frac = frac*multiplier + uint32(v-'0')
+		frac = frac*multiplier + int32(v-'0')
 		multiplier = 10
 		scaleCount += meaningful
 		if scaleCount > scale {
@@ -81,13 +81,13 @@ func Decode32(precision, scale int, input []byte) (uint32, error) {
 
 	res := integral*pow32[scale] + frac*pow32[scale-scaleCount]
 	if negative {
-		return -res, nil
+		return int32(-res), nil
 	}
-	return res, nil
+	return int32(res), nil
 }
 
 // Encode32 encodes given decimal number v with given scale into string
-func Encode32(scale int, v uint32) string {
+func Encode32(scale int, v int32) string {
 	buf := &bytes.Buffer{}
 	if int32(v) < 0 {
 		buf.WriteByte('-')
